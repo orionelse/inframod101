@@ -1,9 +1,9 @@
-profile                 = "tikal"
-vendor_name             = "tikal"
+profile                 = "Orion"
+vendor_name             = "Orion"
 region                  = "ap-southeast-1"
 bucket                  = "demoapp-terraform-state"
-primary_domain          = "tikal.io"
-dynamodb_table          = "TikalTerraformStatelock"
+primary_domain          = "orionelse.io"
+dynamodb_table          = "DemoAppTerraformStatelock"
 env                     = "tf-customer1"
 instance_count          = 1
 key_name                = "client-key"

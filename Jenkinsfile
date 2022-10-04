@@ -34,10 +34,10 @@ pipeline {
 				choices: [ 'plan', 'apply', 'destroy'],
 				description: 'Run terraform plan / apply / destroy')
 		string (name: 'PROFILE',
-			   defaultValue: 'tikal',
-			   description: 'Optional. Target aws profile defaults to tikal')
+			   defaultValue: 'Orion',
+			   description: 'Optional. Target aws profile defaults to Orion')
 		string (name: 'EMAIL',
-			   defaultValue: 'orionelse@tikalk.com',
+			   defaultValue: 'orion.else.consult@gmail.com',
 			   description: 'Optional. Email notification')
     }
 	stages {
@@ -49,7 +49,7 @@ pipeline {
 							[ $class: 'AmazonWebServicesCredentialsBinding',
 								accessKeyVariable: 'AWS_ACCESS_KEY_ID',
 								secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-								credentialsId: 'Tikal-AWS-access',
+								credentialsId: 'Orion-AWS-access',
 								]])
 							{
 							try {
@@ -91,7 +91,7 @@ pipeline {
 								[ $class: 'AmazonWebServicesCredentialsBinding',
 									accessKeyVariable: 'AWS_ACCESS_KEY_ID',
 									secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-									credentialsId: 'Tikal-AWS-access',
+									credentialsId: 'Orion-AWS-access',
 									]])
 								{
 								try {
@@ -125,7 +125,7 @@ pipeline {
 								[ $class: 'AmazonWebServicesCredentialsBinding',
 									accessKeyVariable: 'AWS_ACCESS_KEY_ID',
 									secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-									credentialsId: 'Tikal-AWS-access',
+									credentialsId: 'Orion-AWS-access',
 									]])
 								{
 								try {
@@ -172,7 +172,7 @@ pipeline {
 								[ $class: 'AmazonWebServicesCredentialsBinding',
 									accessKeyVariable: 'AWS_ACCESS_KEY_ID',
 									secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-									credentialsId: 'Tikal-AWS-access',
+									credentialsId: 'Orion-AWS-access',
 									]])
 								{
 								try {
