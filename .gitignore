@@ -1,0 +1,6 @@
+**/*.tfstate
+**.*.tfstate.backup
+**/var.key_name.*
+*.t
+**/.terraform/
+*.DS_Store*
