@@ -197,15 +197,13 @@ pipeline {
 			echo "Mail section"
 			emailext (
 			body: """
-				<p>${ENV_NAME} - Jenkins Pipeline ${ACTION} Summary</p>
-				<p>Jenkins url: <a href='${env.BUILD_URL}/>link</a></p>
+				${ENV_NAME} - Jenkins Pipeline ${ACTION} Summary
+				Jenkins url: ${env.BUILD_URL}
 
-				<ul>
-				<li> Build number: '${env.BUILD_NUMBER}' </li>
-				<li> Branch built: '${env.BRANCH_NAME}' </li>
-				<li> ACTION: $ACTION</li>
-				<li> REGION: ${AWS_REGION}</li>
-				</ul>
+				Build number: '${env.BUILD_NUMBER}'
+				Branch built: '${env.BRANCH_NAME}'
+				ACTION: $ACTION
+				REGION: ${AWS_REGION}
 				""",
 				recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
 				to: "${EMAIL}",
@@ -213,6 +211,7 @@ pipeline {
 				attachLog: true
 				)
 			/*
+			echo "Mail sending by Mailer"
 			mail to: "${EMAIL}",
 			subject: "[${ENV_NAME}] - ${env.JOB_NAME}-${env.BUILD_NUMBER} [$AWS_REGION][$ACTION]",
 			body: """
