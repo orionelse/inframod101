@@ -28,7 +28,7 @@ pipeline {
 				choices: ['ap-southeast-1','ap-east-1', 'ap-notheast-1'],
 				description: 'Default at ap-southeast-1 "SG", ap-east-1 "HK", ap-notheast-1 "TK"')
 		string (name: 'ENV_NAME',
-			   defaultValue: 'tf-customer1',
+			   defaultValue: 'tf-m-demoapp-dev',
 			   description: 'Environment, Project or Customer name. Sample tf-{cusid}-{app}-{env}')
 		choice (name: 'ACTION',
 				choices: [ 'plan', 'apply', 'destroy'],
@@ -195,23 +195,7 @@ pipeline {
     {
 			always{
 			echo "Mail section"
-			emailext (
-			body: """
-				<p>${ENV_NAME} - Jenkins Pipeline ${ACTION} Summary</p>
-				<p>Jenkins url: <a href='${env.BUILD_URL}/>link</a></p>
-				<p>Pipeline Blueocean： <a href='${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline'>${env.JOB_NAME}(pipeline page)</a></p>
-			${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline
-				<ul>
-				<li> Branch built: '${env.BRANCH_NAME}' </li>
-				<li> ACTION: $ACTION</li>
-				<li> REGION: ${AWS_REGION}</li>
-				</ul>
-				""",
-				recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-				to: "${EMAIL}",
-				subject: "[${ENV_NAME}] - ${env.JOB_NAME}-${env.BUILD_NUMBER} [$AWS_REGION][$ACTION]",
-				attachLog: true
-				)
+			emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
         }
     }
 }
