@@ -159,7 +159,7 @@ pipeline {
 						message: "Destroy ${ENV_NAME} !?!",
 						ok: "Yes",
 						parameters: [
-							string(name: 'IS_APPROVED', defaultValue: 'No', description: 'Think again!!!')
+							string(name: 'IS_APPROVED', defaultValue: 'No', description: 'To confirm the deletion, type Yes in the box')
 						]
 					)
 					if (IS_APPROVED != 'Yes') {
