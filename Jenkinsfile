@@ -101,6 +101,9 @@ pipeline {
 										currentBuild.result = "UNSTABLE"
 									} else if (ex == 2 && "${ACTION}" == 'plan') {
 										echo "Update found in plan tfplan"
+										sh """
+										ls -l tfplan
+										"""
 									} else {
 										echo "Try running terraform again in debug mode"
 									}
