@@ -25,17 +25,17 @@ pipeline {
 	parameters {
 
 		choice (name: 'AWS_REGION',
-				choices: ['ap-southeast-1','us-west-1', 'us-west-2'],
-				description: 'Pick A regions defaults to ap-southeast-1')
+				choices: ['ap-southeast-1','ap-east-1', 'ap-notheast-1'],
+				description: 'Default at ap-southeast-1 "SG", ap-east-1 "HK", ap-notheast-1 "TK"')
 		string (name: 'ENV_NAME',
 			   defaultValue: 'tf-customer1',
 			   description: 'Env or Customer name')
 		choice (name: 'ACTION',
 				choices: [ 'plan', 'apply', 'destroy'],
-				description: 'Run terraform plan / apply / destroy')
+				description: 'Terraform Command plan|apply|destroy')
 		string (name: 'PROFILE',
-			   defaultValue: 'Orion',
-			   description: 'Optional. Target aws profile defaults to Orion')
+			   defaultValue: 'orionuser',
+			   description: 'Optional. Target AWS profile defaults to orionuser')
 		string (name: 'EMAIL',
 			   defaultValue: 'orion.else.consult@gmail.com',
 			   description: 'Optional. Email notification')
@@ -54,7 +54,7 @@ pipeline {
 							{
 							try {
 								echo "Setting up Terraform"
-								def tfHome = tool name: 'terraform-0.12.20',
+								def tfHome = tool name: 'terraform-0.12.17',
 									type: 'org.jenkinsci.plugins.terraform.TerraformInstallation'
 									env.PATH = "${tfHome}:${env.PATH}"
 									currentBuild.displayName += "[$AWS_REGION]::[$ACTION]"
@@ -68,7 +68,7 @@ pipeline {
 									""")
 									tfCmd('version')
 							} catch (ex) {
-                                                                echo 'Err: Incremental Build failed with Error: ' + ex.toString()
+                                echo 'Err: Incremental Build failed with Error: ' + ex.toString()
 								currentBuild.result = "UNSTABLE"
 							}
 						}
@@ -79,8 +79,8 @@ pipeline {
 		stage('terraform plan') {
 			when { anyOf
 					{
-						environment name: 'ACTION', value: 'plan';
-						environment name: 'ACTION', value: 'apply'
+						environment name: 'ACTION', value: 'plan-blocked';
+						environment name: 'ACTION', value: 'apply-blocked'
 					}
 				}
 			steps {
@@ -129,9 +129,10 @@ pipeline {
 									]])
 								{
 								try {
-									tfCmd('apply', 'tfplan')
+									/*tfCmd('apply', 'tfplan')*/
+                                    echo "[Apply] tfCmd apply tfplan"
 								} catch (ex) {
-                  currentBuild.result = "UNSTABLE"
+                                    currentBuild.result = "UNSTABLE"
 								}
 							}
 						}
@@ -140,8 +141,9 @@ pipeline {
 			}
 			post {
 				always {
-					archiveArtifacts artifacts: "keys/key-${ENV_NAME}.*", fingerprint: true
-					archiveArtifacts artifacts: "main/show-${ENV_NAME}.txt", fingerprint: true
+					sh """
+                        echo "[Apply] in Always"
+                    """
 				}
 			}
 		}
@@ -153,35 +155,15 @@ pipeline {
 				}
 			steps {
 				script {
-					def IS_APPROVED = input(
-						message: "Destroy ${ENV_NAME} !?!",
-						ok: "Yes",
-						parameters: [
-							string(name: 'IS_APPROVED', defaultValue: 'No', description: 'Think again!!!')
-						]
-					)
-					if (IS_APPROVED != 'Yes') {
-						currentBuild.result = "ABORTED"
-						error "User cancelled"
-					}
+					sh """
+                        echo "[Destroy] In section"
+                    """
 				}
 				dir("${PROJECT_DIR}") {
 					script {
-						wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
-							withCredentials([
-								[ $class: 'AmazonWebServicesCredentialsBinding',
-									accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-									secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-									credentialsId: 'Orion-AWS-access',
-									]])
-								{
-								try {
-									tfCmd('destroy', '-auto-approve')
-								} catch (ex) {
-									currentBuild.result = "UNSTABLE"
-								}
-							}
-						}
+						sh """
+                        echo "[Destroy] Project Dir : $PROJECT_DIR"
+                        """
 					}
 				}
 			}
@@ -190,23 +172,7 @@ pipeline {
   post
     {
 			always{
-			emailext (
-			body: """
-				<p>${ENV_NAME} - Jenkins Pipeline ${ACTION} Summary</p>
-				<p>Jenkins url: <a href='${env.BUILD_URL}/>link</a></p>
-				<p>Pipeline Blueocean： <a href='${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline'>${env.JOB_NAME}(pipeline page)</a></p>
-			${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline
-				<ul>
-				<li> Branch built: '${env.BRANCH_NAME}' </li>
-				<li> ACTION: $ACTION</li>
-				<li> REGION: ${AWS_REGION}</li>
-				</ul>
-				""",
-				recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-				to: "${EMAIL}",
-				subject: "[${ENV_NAME}] - ${env.JOB_NAME}-${env.BUILD_NUMBER} [$AWS_REGION][$ACTION]",
-				attachLog: true
-				)
+			echo "Mail section"
         }
     }
 }
