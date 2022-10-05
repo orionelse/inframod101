@@ -195,6 +195,7 @@ pipeline {
     {
 			always{
 			echo "Mail section"
+			recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
 			mail to: "${EMAIL}",
 			subject: "[${ENV_NAME}] - ${env.JOB_NAME}-${env.BUILD_NUMBER} [$AWS_REGION][$ACTION]",
 			body: """
@@ -207,8 +208,7 @@ pipeline {
 				<li> ACTION: $ACTION</li>
 				<li> REGION: ${AWS_REGION}</li>
 				</ul>
-				""",
-			recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
+				"""
         }
     }
 }
