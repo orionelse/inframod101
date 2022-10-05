@@ -155,15 +155,35 @@ pipeline {
 				}
 			steps {
 				script {
-					sh """
-                        echo "[Destroy] In section"
-                    """
+					def IS_APPROVED = input(
+						message: "Destroy ${ENV_NAME} !?!",
+						ok: "Yes",
+						parameters: [
+							string(name: 'IS_APPROVED', defaultValue: 'No', description: 'Think again!!!')
+						]
+					)
+					if (IS_APPROVED != 'Yes') {
+						currentBuild.result = "ABORTED"
+						error "User cancelled"
+					}
 				}
 				dir("${PROJECT_DIR}") {
 					script {
-						sh """
-                        echo "[Destroy] Project Dir : $PROJECT_DIR"
-                        """
+						wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
+							withCredentials([
+								[ $class: 'AmazonWebServicesCredentialsBinding',
+									accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+									secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+									credentialsId: 'Orion-AWS-access',
+									]])
+								{
+								try {
+									tfCmd('destroy', '-auto-approve')
+								} catch (ex) {
+									currentBuild.result = "UNSTABLE"
+								}
+							}
+						}
 					}
 				}
 			}
