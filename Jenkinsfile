@@ -208,7 +208,7 @@ pipeline {
 				<li> REGION: ${AWS_REGION}</li>
 				</ul>
 				""",
-			recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+			recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
         }
     }
 }
