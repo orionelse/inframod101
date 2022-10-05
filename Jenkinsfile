@@ -207,7 +207,8 @@ pipeline {
 				<li> ACTION: $ACTION</li>
 				<li> REGION: ${AWS_REGION}</li>
 				</ul>
-				"""
+				""",
+			attachLog: true
         }
     }
 }
