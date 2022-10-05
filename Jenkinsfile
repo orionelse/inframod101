@@ -195,9 +195,20 @@ pipeline {
     {
 			always{
 			echo "Mail section"
-			mail to: "orion.else.consult@gmail.com",
-			subject: "Test Subject",
-			body: "Test Body"
+			mail to: "${EMAIL}",
+			subject: "[${ENV_NAME}] - ${env.JOB_NAME}-${env.BUILD_NUMBER} [$AWS_REGION][$ACTION]",
+			body: """
+				<p>${ENV_NAME} - Jenkins Pipeline ${ACTION} Summary</p>
+				<p>Jenkins url: <a href='${env.BUILD_URL}/>link</a></p>
+				<p>Pipeline Blueocean： <a href='${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline'>${env.JOB_NAME}(pipeline page)</a></p>
+			${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline
+				<ul>
+				<li> Branch built: '${env.BRANCH_NAME}' </li>
+				<li> ACTION: $ACTION</li>
+				<li> REGION: ${AWS_REGION}</li>
+				</ul>
+				""",
+			recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
         }
     }
 }
