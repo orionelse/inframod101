@@ -195,17 +195,36 @@ pipeline {
     {
 			always{
 			echo "Mail section"
+			emailext (
+			body: """
+				<p>${ENV_NAME} - Jenkins Pipeline ${ACTION} Summary</p>
+				<p>Jenkins url: <a href='${env.BUILD_URL}/>link</a></p>
+
+				<ul>
+				<li> Build number: '${env.BUILD_NUMBER}' </li>
+				<li> Branch built: '${env.BRANCH_NAME}' </li>
+				<li> ACTION: $ACTION</li>
+				<li> REGION: ${AWS_REGION}</li>
+				</ul>
+				""",
+				recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+				to: "${EMAIL}",
+				subject: "[${ENV_NAME}] - ${env.JOB_NAME}-${env.BUILD_NUMBER} [$AWS_REGION][$ACTION]",
+				attachLog: true
+				)
+			/*
 			mail to: "${EMAIL}",
 			subject: "[${ENV_NAME}] - ${env.JOB_NAME}-${env.BUILD_NUMBER} [$AWS_REGION][$ACTION]",
 			body: """
 				${ENV_NAME} - Jenkins Pipeline ${ACTION} Summary
 				Jenkins url: ${env.BUILD_URL}
-				Pipeline  ${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline
 
+				Build number: ${env.BUILD_NUMBER}
 				Branch built: '${env.BRANCH_NAME}'
 				ACTION: $ACTION
 				REGION: ${AWS_REGION}
 				"""
+				*/
         }
     }
 }
