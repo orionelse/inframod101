@@ -129,8 +129,8 @@ pipeline {
 									]])
 								{
 								try {
-									/*tfCmd('apply', 'tfplan')*/
-                                    echo "[Apply] tfCmd apply tfplan"
+									tfCmd('apply', 'tfplan')
+                                    /*echo "[Apply] tfCmd apply tfplan"*/
 								} catch (ex) {
                                     currentBuild.result = "UNSTABLE"
 								}
@@ -141,9 +141,8 @@ pipeline {
 			}
 			post {
 				always {
-					sh """
-                        echo "[Apply] in Always"
-                    """
+					archiveArtifacts artifacts: "keys/key-${ENV_NAME}.*", fingerprint: true
+					archiveArtifacts artifacts: "main/show-${ENV_NAME}.txt", fingerprint: true
 				}
 			}
 		}
