@@ -79,8 +79,8 @@ pipeline {
 		stage('terraform plan') {
 			when { anyOf
 					{
-						environment name: 'ACTION', value: 'plan-blocked';
-						environment name: 'ACTION', value: 'apply-blocked'
+						environment name: 'ACTION', value: 'plan';
+						environment name: 'ACTION', value: 'apply'
 					}
 				}
 			steps {
