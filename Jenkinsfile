@@ -195,8 +195,8 @@ pipeline {
     {
 			always{
 			echo "Mail section"
-			mail to: "orion.else.consult@gmail.com"
-			subject: "Test Subject"
+			mail to: "orion.else.consult@gmail.com",
+			subject: "Test Subject",
 			body: "Test Body"
         }
     }
