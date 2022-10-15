@@ -5,7 +5,7 @@
       "Sid": "Stmt1664866983210",
       "Action": "s3:*",
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::demoapp-terraform-state",
+      "Resource": "*",
       "Principal": "*"
     }
   ]
