@@ -80,7 +80,9 @@ pipeline {
 			steps {
 				script {
 					sh """
+					cd /root
 					terrascan scan -i terraform -t aws -l -d $WORKSPACE
+					cd -
 					"""
 				}
 			}
