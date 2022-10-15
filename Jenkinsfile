@@ -81,7 +81,7 @@ pipeline {
 				script {
 					catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     sh """
-						terrascan scan -i terraform -t gcp -l -d $WORKSPACE
+						terrascan scan -i terraform -t aws -l -d $WORKSPACE
 					"""
                 	}
 				}
