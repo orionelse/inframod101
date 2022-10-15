@@ -76,6 +76,15 @@ pipeline {
 				}
 			}
 		}	
+		stage('IaC Scan'){
+			steps {
+				script {
+					sh """
+					terrascan scan -i terraform -t aws -d $WORKSPACE
+					"""
+				}
+			}
+		}	
 		stage('terraform plan') {
 			when { anyOf
 					{
