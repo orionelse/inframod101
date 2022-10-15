@@ -79,11 +79,11 @@ pipeline {
 		stage('IaC Scan'){
 			steps {
 				script {
-					sh """
-					cd /tmp
-					terrascan scan -i terraform -t aws -l -d $WORKSPACE
-					cd -
+					catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh """
+						terrascan scan -i terraform -t aws -l -d $WORKSPACE
 					"""
+                	}
 				}
 			}
 		}	
