@@ -81,9 +81,7 @@ pipeline {
 				script {
 					catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     sh """
-					    cd /tmp
 						terrascan scan -i terraform -t aws -l -d $WORKSPACE
-						cd -
 					"""
                 	}
 				}
